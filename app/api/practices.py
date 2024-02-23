@@ -23,6 +23,16 @@ async def sum_calc_w_str(int1: str, int2: str):
     return {"result": int1 + int2}
 
 
+@practice_router.get("/frameworks")
+async def get_frameworks_by_query(framework: PythonFrameworkEnum):
+    return {"frameworks": framework}
+
+
+@practice_router.get("/frameworks-literal")
+async def get_frameworks_by_query_with_literal(framework: Literal["django", "flask", "fastapi"]):
+    return {"frameworks": framework}
+
+
 @practice_router.get("/frameworks/{framework}")
 async def get_frameworks(framework: PythonFrameworkEnum):
     return {"frameworks": framework}
