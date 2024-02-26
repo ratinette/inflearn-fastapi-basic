@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     items_per_user: int = 10
 
     class Config:
-        env_file = "env/local.env"
+        env_file = "app/env/local.env"
 
 
 settings = Settings()
