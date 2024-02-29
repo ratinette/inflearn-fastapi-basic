@@ -1,11 +1,13 @@
 import os
 from typing import Literal
 
-from fastapi import APIRouter, Header, Cookie
+from fastapi import APIRouter, Header, Cookie, Form
 from enum import Enum
 
+from pydantic import EmailStr
 from starlette.requests import Request
 from starlette.responses import Response
+from starlette.templating import Jinja2Templates
 
 
 class PythonFrameworkEnum(str, Enum):
@@ -55,25 +57,25 @@ async def get_file(file_path: str):
     return content
 
 
-@practice_router.get("/header-test-ua")
-async def header_test(user_agent: str = Header(..., description="User-Agent")):
-    return {"user_agent": user_agent}
+@practice_router.get("/header-test-ua", tags=["header&cookie"])
+async def header_test(user_agent_2: str = Header(..., description="User-Agent")):
+    return {"user_agent": user_agent_2}
 
 
-@practice_router.get("/header-test-from-request")
+@practice_router.get("/header-test-from-request", tags=["header&cookie"])
 async def header_test_request(request: Request):
     user_agent = request.headers.get("user-agent")
     res = Response("User-Agent")
-    res.headers["your-agent"] = user_agent
+    res.headers["your-agent-1"] = user_agent
     return res
 
 
-@practice_router.get("/cookie-test")
+@practice_router.get("/cookie-test", tags=["header&cookie"])
 async def cookie_test(session_token: str = Cookie(None)):
     return {"session_token": session_token}
 
 
-@practice_router.get("/bake-cookie-test")
+@practice_router.get("/bake-cookie-test", tags=["header&cookie"])
 async def cookie_set():
     res = Response("Cookie Set")
     res.set_cookie(
@@ -88,9 +90,26 @@ async def cookie_set():
     return res
 
 
-@practice_router.get("/cookie-test-from-request")
+@practice_router.get("/cookie-test-from-request", tags=["header&cookie"])
 async def cookie_test_request(request: Request):
     session_token = request.cookies.get("session_token")
     return {"session_token": session_token}
 
 
+templates = Jinja2Templates(directory="templates")
+
+
+@practice_router.get("/form-test", tags=["form"])
+async def form_test(request: Request):
+    return templates.TemplateResponse("form.html", {"request": request})
+
+
+@practice_router.post("/submit-form", tags=["form"])
+async def submit_form_1(name: str = Form(...), email: EmailStr = Form(...)):
+    print(name, email)
+    return {"username": name, "password": email}
+
+
+@practice_router.post("/submit-form-2", tags=["form"])
+async def submit_form_2(request: Request, name: str = Form(...), email: EmailStr = Form(...)):
+    return templates.TemplateResponse("form_result.html", {"request": request, "name": name, "email": email})
