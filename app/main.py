@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.logger import logger
 
 from app.api import practice_router
+from app.api.practices_2 import practice_router2
 
 
 def app():
@@ -13,6 +14,7 @@ def app():
 
     # Add Routers
     fastapi_app.include_router(practice_router, prefix="/practices", tags=["PRACTICES"])
+    fastapi_app.include_router(practice_router2, prefix="/practices2", tags=["PRACTICES2"])
 
     @fastapi_app.on_event("startup")
     def startup_event():
