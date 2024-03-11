@@ -2,7 +2,7 @@ import copy
 from typing import Optional
 
 from fastapi import APIRouter, File, UploadFile, Form, Body
-from pydantic import BaseModel, create_model, field_validator, model_validator
+from pydantic import BaseModel, field_validator, model_validator
 from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
@@ -129,24 +129,7 @@ class ErrorResponse(BaseModel):
     operation_id="create_user_profile_2",
     include_in_schema=True,
     deprecated=False,
-    openapi_extra={
-        "requestBody": {
-            "content": {
-                "application/json": {
-                    "schema": {
-                        "required": ["name", "price"],
-                        "type": "object",
-                        "properties": {
-                            "name": {"type": "string"},
-                            "price": {"type": "number"},
-                            "description": {"type": "string"},
-                        },
-                    }
-                }
-            },
-            "required": True,
-        },
-    },
+    openapi_extra={},
 )
 async def create_user_profile_2(profile: UserProfile = Body()):
     """
@@ -177,10 +160,4 @@ def model():
         b: str
     Bar.model_rebuild()
     return LazyValue
-
-
-
-
-
-
 

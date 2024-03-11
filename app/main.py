@@ -9,7 +9,7 @@ from app.api import practice_router
 from app.api.practices_2 import practice_router2
 
 APP_NAME = "My Quiz API"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.1"
 APP_DESC = """
 - `FastAPI` 강좌용 API 서버입니다.
 - `FastAPI`를 활용하여 API 서버를 구축하는 방법을 학습합니다.
@@ -19,11 +19,7 @@ APP_DESC = """
 """
 
 def app():
-    fastapi_app = FastAPI(
-        docs_url=None,
-    )
-
-
+    fastapi_app = FastAPI()
 
     fastapi_app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -54,7 +50,7 @@ def app():
 
     def custom_openapi():
         if fastapi_app.openapi_schema:
-            return app.openapi_schema
+            return fastapi_app.openapi_schema
         openapi_schema = get_openapi(
             title=APP_NAME,
             version=APP_VERSION,
@@ -62,8 +58,8 @@ def app():
             description=APP_DESC,
             routes=fastapi_app.routes,
         )
-        app.openapi_schema = openapi_schema
-        return app.openapi_schema
+        fastapi_app.openapi_schema = openapi_schema
+        return fastapi_app.openapi_schema
 
     fastapi_app.openapi = custom_openapi
 
